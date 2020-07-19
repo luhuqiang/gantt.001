@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<link rel="icon" href="../static/images/favicon.ico">
+<link rel="stylesheet" type="text/css" href="../static/style/font-awesome.min.css" />
+<style>#container, #buttonGroup{
+		max-width: 90%;
+		min-width: 800px;
+		margin: 1em auto;
+	}
+	.hidden {
+		display: none;
+	}
+	.main-container button {
+		font-size: 12px;
+		border-radius: 2px;
+		border: 0;
+		background-color: #ddd;
+		padding: 13px 18px;
+	}
+	.main-container button[disabled] {
+		color: silver;
+	}
+	.button-row button {
+		display: inline-block;
+		margin: 0;
+	}
+	.overlay {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: rgba(0, 0, 0, 0.3);
+		transition: opacity 500ms;
+	}
+	.popup {
+		margin: 70px auto;
+		padding: 20px;
+		background: #fff;
+		border-radius: 5px;
+		width: 300px;
+		position: relative;
+	}
+	.popup input, .popup select {
+		width: 100%;
+		margin: 5px 0 15px;
+	}
+	.popup button {
+		float: right;
+		margin-left: 0.2em;
+	}
+	.popup .clear {
+		height: 50px;
+	}
+	.popup input[type=text], .popup select {
+		height: 2em;
+		font-size: 16px;
+	}
+</style>
+<script src="../static/js/highcharts-gantt.js"></script>
+<script src="../static/js/draggable-points.js"></script>
+<script src="../static/js/exporting.js"></script>
+</head>
+
+<body>
+<div class="main-container"></div>
+<div id="container"></div>
+<script>
+	var today = new Date(),
+	day = 1000 * 60 * 60 * 24,
+	each = Highcharts.each,
+	reduce = Highcharts.reduce;
+	// Set to 00:00:00:000 today
+	today.setUTCHours(0);
+	today.setUTCMinutes(0);
+	today.setUTCSeconds(0);
+	today.setUTCMilliseconds(0);
+	today = today.getTime();
+	// Update disabled status of the remove button, depending on whether or not we
+	// have any selected points.
+	// Create the chart
+	var chart = Highcharts.ganttChart('container', {
+	chart: {
+		spacingLeft: 1
+	},
+	title: {
+		text: '依赖号：SH2020X001-1'
+	},
+	subtitle: {
+		text: 'Power by luhq'
+	},
+	plotOptions: {
+		series: {
+			animation: false, // Do not animate dependency connectors
+			dragDrop: {
+				draggableX: true,
+				draggableY: false,
+				dragMinY: 0,
+				dragMaxY: 4,
+				dragPrecisionX: day  // Snap to eight hours / 3
+			},
+			dataLabels: {
+				enabled: true,
+				format: '{point.name}',
+				style: {
+					cursor: 'default',
+					pointerEvents: 'none'
+				}
+			},
+			allowPointSelect: true,
+		}
+	},
+	yAxis: {
+		type: 'category',
+		categories: ['业务', '技术', '资材', '制造', '品管'],
+		min: 0,
+		max: 4
+	},
+	xAxis: {		
+		type: 'datetime',
+			dateTimeLabelFormats: {
+				day: '%m/%d'
+			}
+	},
+	tooltip: {
+		xDateFormat: '%Y-%m-%d'
+	},
+	credits: {
+		enabled:false
+	},
+	exporting: {
+		enabled:false
+	},
+	series: [{
+		name: '依赖号：SH2020X001-1',
+		data: [{
+			start: today + 1 * day,
+			end: today + day * 2,
+			name: '依赖书录入',
+			y: 0
+		}, {
+			start: today + day * 10,
+			end: today + day * 11,
+			name: '包装',
+			y: 0
+		},  {
+			start: today + day * 12,
+			name: '发货日',
+			milestone: true,
+			y: 0
+		}, {
+			start: today + day * 2,
+			end: today + day * 4,
+			name: '出图',
+			y: 1
+		}, {
+			start: today + day * 2,
+			end: today + day * 6,
+			name: '采购',
+			y: 2
+		}, {
+			start: today + day * 4,
+			end: today + day * 9,
+			name: '组立',	
+			y: 3
+		}, {
+			start: today + day * 9,
+			end: today + day * 10,
+			name: '调试',
+			y: 4
+		}]
+	}]
+});
+</script>
+</body>
+</html>
